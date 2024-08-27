@@ -41,7 +41,7 @@ class Player(
     override var world: World,
     val connection: ChannelHandlerContext,
     val address: String,
-    val crypto: PlayerCrypto,
+    val crypto: PlayerEncryptionContext,
 ): Entity(location) {
     override var velocity: Vector3 = Vector3(0, 0, 0)
     override var hasGravity: Boolean = true

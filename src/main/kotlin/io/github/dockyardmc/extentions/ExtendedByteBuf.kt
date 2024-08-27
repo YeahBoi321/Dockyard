@@ -6,12 +6,14 @@ import io.github.dockyardmc.scroll.Component
 import io.github.dockyardmc.scroll.extensions.toComponent
 import io.github.dockyardmc.utils.MathUtils
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufUtil
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.DecoderException
 import org.jglrxavpok.hephaistos.nbt.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.util.*
@@ -19,6 +21,17 @@ import kotlin.experimental.inv
 
 private const val SEGMENT_BITS: Byte = 0x7F
 private const val CONTINUE_BIT = 0x80
+
+fun ByteBuf.asByteBuffer(reader: Int, length: Int): ByteBuffer = this.nioBuffer().slice(reader, length)
+
+fun ByteBuffer.toByteBuf(): ByteBuf = Unpooled.copiedBuffer(this)
+
+fun ByteBuf.wrap(): ByteBuf {
+    assert(this.isDirect)
+    return Unpooled.wrappedBuffer(this)
+}
+
+fun ByteBuf.canRead(size: Int): Boolean = readerIndex() + size <= writerIndex()
 
 fun ByteBuf.writeOptional(item: Any?, unit: (ByteBuf) -> Unit) {
     val isPresent = item != null

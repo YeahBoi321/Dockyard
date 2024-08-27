@@ -27,6 +27,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import cz.lukynka.prettylog.log
 import io.github.dockyardmc.annotations.AnnotationProcessor
 import io.github.dockyardmc.protocol.PacketParser
+import io.github.dockyardmc.protocol.PlayerSocketConnection
 import java.net.InetSocketAddress
 import java.util.*
 
@@ -112,7 +113,8 @@ class DockyardServer {
                 .childHandler(object : ChannelInitializer<SocketChannel>(){
                     override fun initChannel(ch: SocketChannel) {
                         channelPipeline = ch.pipeline()
-                            .addLast("processor", PacketProcessor())
+//                            .addLast("processor", PacketProcessor())
+                            .addLast("processor", PlayerSocketConnection())
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)

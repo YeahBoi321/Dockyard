@@ -58,14 +58,14 @@ class LoginHandler(var processor: PacketProcessor): PacketHandler(processor) {
         secureRandom.nextBytes(verificationToken)
         // verificationToken.size reports 4 but nextBytes WRITES 8 IN REALITY... WHY???? I HAVE SPENT 2 HOURS DEBUGGING THIS
 
-        val playerCrypto = PlayerCrypto(publicKey, privateKey, verificationToken)
+        val playerEncryptionContext = PlayerEncryptionContext(publicKey, privateKey, verificationToken)
         val player = Player(
             username =  packet.name,
             entityId = EntityManager.entityIdCounter.incrementAndGet(),
             uuid =  packet.uuid,
             world = WorldManager.worlds.values.first(),
             address = connection.channel().remoteAddress().address,
-            crypto = playerCrypto,
+            crypto = playerEncryptionContext,
             connection = connection,
         )
 

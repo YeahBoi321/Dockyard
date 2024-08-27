@@ -5,7 +5,7 @@ import java.security.PrivateKey
 import java.security.PublicKey
 import javax.crypto.SecretKey
 
-class PlayerCrypto(
+class PlayerEncryptionContext(
     val publicKey: PublicKey,
     val privateKey: PrivateKey,
     val verifyToken: ByteArray,
