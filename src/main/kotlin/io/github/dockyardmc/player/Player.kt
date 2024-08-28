@@ -271,7 +271,7 @@ class Player(
     private fun sendSystemMessage(component: Component, isActionBar: Boolean) {
         if(!isConnected) return
         val processor = this.getProcessor()
-        if(processor.state != ProtocolState.PLAY) {
+        if(processor.state.value != ProtocolState.PLAY) {
             queuedMessages.add(component to isActionBar)
             return
         }
@@ -280,14 +280,14 @@ class Player(
 
     fun sendPacket(packet: ClientboundPacket) {
         if(!isConnected) return
-        if(packet.state != this.getProcessor().state) return
+        if(packet.state != this.getProcessor().state.value) return
         connection.sendPacket(packet, this)
         lastSentPacket = packet
     }
 
     fun sendToViewers(packet: ClientboundPacket) {
         viewers.forEach { viewer ->
-            if(viewer.getProcessor().state != ProtocolState.PLAY) return@forEach
+            if(viewer.getProcessor().state.value != ProtocolState.PLAY) return@forEach
             viewer.sendPacket(packet)
         }
     }

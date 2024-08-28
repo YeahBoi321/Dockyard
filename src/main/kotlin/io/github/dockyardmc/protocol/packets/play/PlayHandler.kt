@@ -61,6 +61,6 @@ class PlayHandler(var processor: PacketProcessor): PacketHandler(processor) {
     }
 
     fun handleKeepAlive(packet: ServerboundKeepAlivePacket, connection: ChannelHandlerContext) {
-        processor.respondedToLastKeepAlive = true
+//        processor.respondedToLastKeepAlive = true
     }
 }

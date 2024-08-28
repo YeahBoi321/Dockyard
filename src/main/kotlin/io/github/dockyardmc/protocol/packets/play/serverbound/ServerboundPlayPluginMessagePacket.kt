@@ -20,7 +20,7 @@ class ServerboundPlayPluginMessagePacket(val channel: String, val data: ByteArra
     companion object {
         fun read(byteBuf: ByteBuf): ServerboundPlayPluginMessagePacket {
             val channel = byteBuf.readString()
-            val data = byteBuf.readRawBytes()
+            val data = byteBuf.readBytes(byteBuf.readableBytes()).toByteArraySafe()
             return ServerboundPlayPluginMessagePacket(channel, data)
         }
     }

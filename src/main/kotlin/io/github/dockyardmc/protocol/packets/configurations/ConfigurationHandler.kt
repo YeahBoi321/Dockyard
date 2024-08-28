@@ -73,7 +73,7 @@ class ConfigurationHandler(val processor: PacketProcessor): PacketHandler(proces
 
     fun handleConfigurationFinishAcknowledge(packet: ServerboundFinishConfigurationAcknowledgePacket, connection: ChannelHandlerContext) {
         val player = processor.player
-        processor.state = ProtocolState.PLAY
+        processor.state.value = ProtocolState.PLAY
         processor.player.releaseMessagesQueue()
 
         val event = PlayerPreSpawnWorldSelectionEvent(player, WorldManager.getOrThrow("main"))

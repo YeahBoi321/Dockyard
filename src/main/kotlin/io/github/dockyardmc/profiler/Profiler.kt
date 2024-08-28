@@ -18,9 +18,9 @@ class Profiler {
     private lateinit var endTime: Instant
     var onlyLogAbove: Long? = null
 
-    fun start(name: String, onlyLogAbove: Long? = null) {
+    fun start(name: String, onlyLogAboveMs: Long? = null) {
         this.name = name
-        this.onlyLogAbove = onlyLogAbove
+        this.onlyLogAbove = onlyLogAboveMs
         startTime = Instant.now()
     }
 

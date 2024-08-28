@@ -7,13 +7,11 @@ import io.github.dockyardmc.events.ServerFinishLoadEvent
 import io.github.dockyardmc.events.ServerStartEvent
 import io.github.dockyardmc.events.ServerTickEvent
 import io.github.dockyardmc.extentions.*
-import io.github.dockyardmc.player.PlayerManager
 import io.github.dockyardmc.plugins.PluginManager
 import io.github.dockyardmc.plugins.bundled.commands.DockyardCommands
 import io.github.dockyardmc.plugins.bundled.extras.DockyardExtras
 import io.github.dockyardmc.profiler.Profiler
 import io.github.dockyardmc.protocol.PacketProcessor
-import io.github.dockyardmc.protocol.packets.play.clientbound.ClientboundKeepAlivePacket
 import io.github.dockyardmc.runnables.RepeatingTimerAsync
 import io.github.dockyardmc.utils.Resources
 import io.netty.bootstrap.ServerBootstrap
@@ -27,7 +25,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import cz.lukynka.prettylog.log
 import io.github.dockyardmc.annotations.AnnotationProcessor
 import io.github.dockyardmc.protocol.PacketParser
-import io.github.dockyardmc.protocol.PlayerSocketConnection
 import java.net.InetSocketAddress
 import java.util.*
 
@@ -54,21 +51,21 @@ class DockyardServer {
         ConfigManager.load()
     }
 
-    //TODO rewrite and make good
-    var keepAliveId = 0L
-    val keepAlivePacketTimer = RepeatingTimerAsync(5000) {
-        PlayerManager.players.forEach {
-            it.connection.sendPacket(ClientboundKeepAlivePacket(keepAliveId))
-            val processor = PlayerManager.playerToProcessorMap[it.uuid]!!
-            if(!processor.respondedToLastKeepAlive) {
-                log("$it failed to respond to keep alive", LogType.WARNING)
-//                it.kick(getSystemKickMessage(KickReason.FAILED_KEEP_ALIVE))
-                return@forEach
-            }
-            processor.respondedToLastKeepAlive = false
-        }
-        keepAliveId++
-    }
+//    //TODO rewrite and make good
+//    var keepAliveId = 0L
+//    val keepAlivePacketTimer = RepeatingTimerAsync(5000) {
+//        PlayerManager.players.forEach {
+//            it.connection.sendPacket(ClientboundKeepAlivePacket(keepAliveId))
+//            val processor = PlayerManager.playerToProcessorMap[it.uuid]!!
+//            if(!processor.respondedToLastKeepAlive) {
+//                log("$it failed to respond to keep alive", LogType.WARNING)
+////                it.kick(getSystemKickMessage(KickReason.FAILED_KEEP_ALIVE))
+//                return@forEach
+//            }
+//            processor.respondedToLastKeepAlive = false
+//        }
+//        keepAliveId++
+//    }
 
     fun start() {
         versionInfo = Resources.getDockyardVersion()
@@ -99,7 +96,7 @@ class DockyardServer {
 
         log("DockyardMC finished loading", LogType.SUCCESS)
         Events.dispatch(ServerFinishLoadEvent(this))
-        keepAlivePacketTimer.run()
+//        keepAlivePacketTimer.run()
 
         profiler.end()
     }
@@ -113,8 +110,7 @@ class DockyardServer {
                 .childHandler(object : ChannelInitializer<SocketChannel>(){
                     override fun initChannel(ch: SocketChannel) {
                         channelPipeline = ch.pipeline()
-//                            .addLast("processor", PacketProcessor())
-                            .addLast("processor", PlayerSocketConnection())
+                            .addLast("processor", PacketProcessor())
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)

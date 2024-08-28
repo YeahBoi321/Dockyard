@@ -30,18 +30,18 @@ import javax.crypto.spec.SecretKeySpec
 class LoginHandler(var processor: PacketProcessor): PacketHandler(processor) {
 
     fun handleHandshake(packet: ServerboundHandshakePacket, connection: ChannelHandlerContext) {
-        processor.playerProtocolVersion = packet.version
+        processor.protocolVersion = packet.version
 
-        processor.state = ProtocolState.LOGIN
+        processor.state.value = ProtocolState.LOGIN
     }
 
     fun handleLoginStart(packet: ServerboundLoginStartPacket, connection: ChannelHandlerContext) {
         debug("Received login start packet with name ${packet.name} and UUID ${packet.uuid}", LogType.DEBUG)
 
         if(!DockyardServer.allowAnyVersion) {
-            val playerVersion = VersionToProtocolVersion.map.reversed()[processor.playerProtocolVersion]
+            val playerVersion = VersionToProtocolVersion.map.reversed()[processor.protocolVersion]
             val requiredVersion = DockyardServer.versionInfo.protocolVersion
-            if(processor.playerProtocolVersion != requiredVersion) {
+            if(processor.protocolVersion != requiredVersion) {
                 connection.sendPacket(ClientboundLoginDisconnectPacket(getSystemKickMessage("You are using incompatible version <red>($playerVersion)<gray>. Please use version <yellow>${DockyardServer.versionInfo.minecraftVersion}<gray>", KickReason.INCOMPATIBLE_VERSION.name)))
                 return
             }
@@ -113,6 +113,6 @@ class LoginHandler(var processor: PacketProcessor): PacketHandler(processor) {
     }
 
     fun handleLoginAcknowledge(packet: ServerboundLoginAcknowledgedPacket, connection: ChannelHandlerContext) {
-        processor.state = ProtocolState.CONFIGURATION
+        processor.state.value = ProtocolState.CONFIGURATION
     }
 }

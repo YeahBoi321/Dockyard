@@ -49,7 +49,9 @@ class ServerboundPlayerCommandPacket(val entityId: Int, val action: PlayerAction
 
     companion object {
         fun read(buf: ByteBuf): ServerboundPlayerCommandPacket {
-            return ServerboundPlayerCommandPacket(buf.readVarInt(), buf.readVarIntEnum<PlayerAction>())
+            val packet = ServerboundPlayerCommandPacket(buf.readVarInt(), buf.readVarIntEnum<PlayerAction>())
+            val jumpBoost = buf.readVarInt()
+            return packet
         }
     }
 }

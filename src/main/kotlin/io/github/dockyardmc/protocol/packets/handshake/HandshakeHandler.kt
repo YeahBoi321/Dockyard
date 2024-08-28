@@ -32,7 +32,7 @@ class HandshakeHandler(val processor: PacketProcessor): PacketHandler(processor)
             return
         }
 
-        processor.state = ProtocolState.STATUS
+        processor.state.value = ProtocolState.STATUS
     }
 
     fun handleStatusRequest(packet: ServerboundStatusRequestPacket, connection: ChannelHandlerContext) {
